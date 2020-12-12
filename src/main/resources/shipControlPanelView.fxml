@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="818.0" prefWidth="1000.0" style="-fx-background-color: #222930;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ship.control.panel.controller.ShipControlPanelViewController">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="83.0" prefWidth="1000.0" text="Nazwa statku czy cos" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="735.0">
+         <font>
+            <Font size="31.0" />
+         </font>
+      </Label>
+      <Pane fx:id="engineSpeedGaugePane" layoutX="159.0" layoutY="112.0" prefHeight="225.0" prefWidth="200.0" />
+      <Pane fx:id="speedValueGaugePane" layoutX="439.0" layoutY="112.0" prefHeight="225.0" prefWidth="200.0" />
+      <Pane layoutX="745.0" layoutY="112.0" prefHeight="450.0" prefWidth="200.0" style="-fx-background-color: green;">
+         <children>
+            <Slider fx:id="leftGas" layoutX="14.0" orientation="VERTICAL" prefHeight="450.0" prefWidth="15.0" value="50.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="170.8" />
+            <Slider fx:id="rightGas" layoutX="170.0" orientation="VERTICAL" prefHeight="450.0" prefWidth="15.0" value="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="170.0" AnchorPane.rightAnchor="14.800000000000011" AnchorPane.topAnchor="0.0" />
+         </children>
+      </Pane>
+      <Pane fx:id="weatherDisplayPane" layoutX="159.0" layoutY="361.0" prefHeight="201.0" prefWidth="480.0" />
+      <Pane fx:id="fuelGaugePane" layoutX="745.0" layoutY="577.0" prefHeight="192.0" prefWidth="200.0" />
+      <VBox layoutX="159.0" layoutY="577.0" prefHeight="192.0" prefWidth="480.0" style="-fx-background-color: green;" />
+   </children>
+</AnchorPane>
