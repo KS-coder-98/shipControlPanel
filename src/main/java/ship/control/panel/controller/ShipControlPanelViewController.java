@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import ship.control.panel.model.Ship;
@@ -17,6 +18,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ShipControlPanelViewController implements Initializable {
+    @FXML
+    private AnchorPane mainPane;
 
     @FXML
     private Pane engineSpeedGaugePane;
@@ -35,6 +38,9 @@ public class ShipControlPanelViewController implements Initializable {
 
     @FXML
     private Pane fuelGaugePane;
+
+    @FXML
+    private Pane gasPane;
 
     @FXML
     private Button buttonStartStop;
@@ -83,6 +89,9 @@ public class ShipControlPanelViewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        gasPane.getStyleClass().add("gradientGas");
+        mainPane.getStyleClass().add("bgSets");
 
         fuelGaugePane.getChildren().add(gaugeFuel);
         weatherDisplayPane.getChildren().add(lcdScreen);

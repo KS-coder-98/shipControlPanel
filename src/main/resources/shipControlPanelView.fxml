@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="818.0" prefWidth="1000.0" style="-fx-background-color: #222930;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ship.control.panel.controller.ShipControlPanelViewController">
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="818.0" prefWidth="1000.0" style="-fx-background-color: #222930;" stylesheets="@mainPane.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ship.control.panel.controller.ShipControlPanelViewController">
    <children>
       <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="83.0" prefWidth="1000.0" text="Nazwa statku czy cos" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="735.0">
          <font>
@@ -21,10 +21,19 @@
       </Label>
       <Pane fx:id="engineSpeedGaugePane" layoutX="159.0" layoutY="112.0" prefHeight="225.0" prefWidth="200.0" />
       <Pane fx:id="speedValueGaugePane" layoutX="439.0" layoutY="112.0" prefHeight="225.0" prefWidth="200.0" />
-      <Pane layoutX="745.0" layoutY="112.0" prefHeight="450.0" prefWidth="200.0" style="-fx-background-color: green;">
+      <Pane fx:id="gasPane" layoutX="745.0" layoutY="112.0" prefHeight="450.0" prefWidth="200.0" stylesheets="@paneGas.css">
          <children>
-            <Slider fx:id="leftGas" layoutX="14.0" orientation="VERTICAL" prefHeight="450.0" prefWidth="15.0" value="50.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="170.8" />
-            <Slider fx:id="rightGas" layoutX="170.0" orientation="VERTICAL" prefHeight="450.0" prefWidth="15.0" value="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="170.0" AnchorPane.rightAnchor="14.800000000000011" AnchorPane.topAnchor="0.0" />
+            <Slider fx:id="leftGas" layoutX="29.0" majorTickUnit="10.0" max="50.0" min="-50.0" minorTickCount="5" orientation="VERTICAL" prefHeight="450.0" prefWidth="0.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="170.8">
+               <padding>
+                  <Insets bottom="20.0" top="20.0" />
+               </padding></Slider>
+            <Slider fx:id="rightGas" layoutX="148.0" majorTickUnit="10.0" max="50.0" min="-50.0" minorTickCount="5" nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="450.0" prefWidth="15.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="148.0" AnchorPane.rightAnchor="36.80000000000001" AnchorPane.topAnchor="0.0">
+               <padding>
+                  <Insets bottom="20.0" top="20.0" />
+               </padding>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets></Slider>
          </children>
       </Pane>
       <Pane fx:id="weatherDisplayPane" layoutX="159.0" layoutY="361.0" prefHeight="201.0" prefWidth="480.0" />

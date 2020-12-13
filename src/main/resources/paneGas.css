@@ -1,0 +1,6 @@
+.gradientGas {
+    -fx-background-color: linear-gradient(#fc4646 5%, #3ffb45 50%, #fc4646 100%);
+    -fx-border-color: silver;
+    -fx-border-width: 10px;
+    -fx-border-style: solid;
+}
