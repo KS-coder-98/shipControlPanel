@@ -4,13 +4,14 @@ import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
 import eu.hansolo.medusa.Section;
 import eu.hansolo.medusa.TickMarkType;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import ship.control.panel.model.Ship;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -35,6 +36,11 @@ public class ShipControlPanelViewController implements Initializable {
     @FXML
     private Pane fuelGaugePane;
 
+    @FXML
+    private Button buttonStartStop;
+
+    Ship ship;
+
     Gauge gaugeFuel = initializeGaugeFuel();
 
     Gauge lcdScreen = initializeLcdScreen();
@@ -43,14 +49,50 @@ public class ShipControlPanelViewController implements Initializable {
 
     Gauge rpm = initializeRPM();
 
+    private synchronized void simulateRPM() {
+        boolean temp = true;
+        int tempValue;
+        while (true) {
+            if (Ship.isOn()) {
+                if (temp) {
+                    rpm.setValue(rpm.getValue() + 25);
+                } else {
+                    rpm.setValue(rpm.getValue() - 25);
+                }
+                temp = !temp;
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(rpm.getOldValue());
+
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
 
         fuelGaugePane.getChildren().add(gaugeFuel);
         weatherDisplayPane.getChildren().add(lcdScreen);
         speedValueGaugePane.getChildren().add(gaugeSpeed);
         engineSpeedGaugePane.getChildren().add(rpm);
+
+        buttonStartStop.addEventFilter(ActionEvent.ACTION, actionEvent -> {
+            Ship.setOn(!Ship.isOn());
+            if (Ship.isOn()) {
+                gaugeFuel.setValue(0.95);
+                rpm.setValue(1000);
+            } else {
+                gaugeFuel.setValue(0.0);
+                rpm.setValue(0);
+            }
+        });
+
+        Thread refreshUserListThread = new Thread(this::simulateRPM);
+        refreshUserListThread.setDaemon(true);
+        refreshUserListThread.start();
 
 
     }
@@ -76,21 +118,35 @@ public class ShipControlPanelViewController implements Initializable {
                 .angleRange(90)
                 .customTickLabelsEnabled(true)
                 .customTickLabels("E", "", "", "", "", "1/2", "", "", "", "", "F")
+                .animated(true)
                 .build();
-        gaugeFuel.setValue(0.85);
+        gaugeFuel.setValue(0.0);
         return gaugeFuel;
     }
 
     private Gauge initializeLcdScreen() {
         var gaugeLcdScreen = GaugeBuilder.create()
                 .skinType(Gauge.SkinType.LCD)
-                .title("TEMPERATURE")
+//                .ledColor(Color.PURPLE)
+//                .foregroundBaseColor(Color.BLACK)
+//                .barColor(Color.BLACK)
+//                .averageColor(Color.BLACK)
+//                .barBackgroundColor(Color.BLACK)
+//                .ledOn(true)
+//                .
+//                .title("TEMPERATURE")
                 .prefSize(480, 201)
-                .subTitle("subtitle")
-                .value(26)
-                .unit("C")
-                .averageVisible(true)
+//                .subTitle("subtitle")
+//                .value(26)
+//                .unit("C")
+//                .averageVisible(true)
                 .build();
+        gaugeLcdScreen.setBarBackgroundColor(Color.BLACK);
+        gaugeLcdScreen.setForegroundBaseColor(Color.WHITE);
+        gaugeLcdScreen.setKnobColor(Color.BLACK);
+        gaugeLcdScreen.setBarColor(Color.BLACK);
+        gaugeLcdScreen.setAverageColor(Color.PURPLE);
+        gaugeLcdScreen.setLedColor(Color.BLACK);
         return gaugeLcdScreen;
     }
 
@@ -111,7 +167,7 @@ public class ShipControlPanelViewController implements Initializable {
         return gauge;
     }
 
-    private Gauge initializeRPM(){
+    private Gauge initializeRPM() {
         return GaugeBuilder.create()
                 .borderPaint(Color.WHITE)
                 .foregroundBaseColor(Color.WHITE)
@@ -119,7 +175,6 @@ public class ShipControlPanelViewController implements Initializable {
                 .startAngle(290)
                 .angleRange(220)
                 .minValue(0)
-                .value(1000)
                 .maxValue(4000)
                 .prefSize(200, 225)
                 .valueVisible(false)
@@ -137,5 +192,6 @@ public class ShipControlPanelViewController implements Initializable {
                 .animated(true)
                 .build();
     }
+
 
 }
