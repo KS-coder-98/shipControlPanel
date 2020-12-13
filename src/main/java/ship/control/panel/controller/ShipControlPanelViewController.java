@@ -49,9 +49,8 @@ public class ShipControlPanelViewController implements Initializable {
 
     Gauge rpm = initializeRPM();
 
-    private synchronized void simulateRPM() {
+    private void simulateRPM() {
         boolean temp = true;
-        int tempValue;
         while (true) {
             if (Ship.isOn()) {
                 if (temp) {
@@ -66,8 +65,19 @@ public class ShipControlPanelViewController implements Initializable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println(rpm.getOldValue());
+        }
+    }
 
+    private void simulateFuel() {
+        while (true) {
+            if (Ship.isOn()) {
+                gaugeFuel.setValue(gaugeFuel.getValue()-rpm.getValue()/100000);
+            }
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -90,9 +100,14 @@ public class ShipControlPanelViewController implements Initializable {
             }
         });
 
-        Thread refreshUserListThread = new Thread(this::simulateRPM);
-        refreshUserListThread.setDaemon(true);
-        refreshUserListThread.start();
+        Thread threadSimulatedRPM = new Thread(this::simulateRPM);
+        threadSimulatedRPM.setDaemon(true);
+        threadSimulatedRPM.start();
+
+        Thread threadSimulatedFuel = new Thread(this::simulateFuel);
+        threadSimulatedFuel.setDaemon(true);
+        threadSimulatedFuel.start();
+
 
 
     }
