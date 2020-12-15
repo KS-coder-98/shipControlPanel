@@ -65,6 +65,9 @@ public class ShipControlPanelViewController implements Initializable {
                     rpm.setValue(rpm.getValue() - 25);
                 }
                 temp = !temp;
+            } else {
+                System.out.println("rpm off");
+                rpm.setValue(0);
             }
             try {
                 Thread.sleep(1000);
@@ -77,10 +80,13 @@ public class ShipControlPanelViewController implements Initializable {
     private void simulateFuel() {
         while (true) {
             if (Ship.isOn()) {
-                gaugeFuel.setValue(gaugeFuel.getValue()-rpm.getValue()/100000);
+                gaugeFuel.setValue(gaugeFuel.getValue() - rpm.getValue() / 1000000);
+            } else {
+                System.out.println("fuel off");
+                gaugeFuel.setValue(0);
             }
             try {
-                Thread.sleep(10000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -90,6 +96,8 @@ public class ShipControlPanelViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+        Ship.setOn(false);
+
         gasPane.getStyleClass().add("gradientGas");
         mainPane.getStyleClass().add("bgSets");
 
@@ -98,16 +106,6 @@ public class ShipControlPanelViewController implements Initializable {
         speedValueGaugePane.getChildren().add(gaugeSpeed);
         engineSpeedGaugePane.getChildren().add(rpm);
 
-        buttonStartStop.addEventFilter(ActionEvent.ACTION, actionEvent -> {
-            Ship.setOn(!Ship.isOn());
-            if (Ship.isOn()) {
-                gaugeFuel.setValue(0.95);
-                rpm.setValue(1000);
-            } else {
-                gaugeFuel.setValue(0.0);
-                rpm.setValue(0);
-            }
-        });
 
         Thread threadSimulatedRPM = new Thread(this::simulateRPM);
         threadSimulatedRPM.setDaemon(true);
@@ -117,6 +115,13 @@ public class ShipControlPanelViewController implements Initializable {
         threadSimulatedFuel.setDaemon(true);
         threadSimulatedFuel.start();
 
+        buttonStartStop.addEventFilter(ActionEvent.ACTION, actionEvent -> {
+            Ship.setOn(!Ship.isOn());
+            if (Ship.isOn()) {
+                gaugeFuel.setValue(0.95);
+                rpm.setValue(1000);
+            }
+        });
 
 
     }
@@ -124,7 +129,6 @@ public class ShipControlPanelViewController implements Initializable {
     private Gauge initializeGaugeFuel() {
         var gaugeFuel = GaugeBuilder.create()
                 .skinType(Gauge.SkinType.VERTICAL)
-//                .prefSize(500, 250)
                 .foregroundBaseColor(Color.rgb(249, 249, 249))
                 .knobColor(Color.BLACK)
                 .maxValue(1.0)
@@ -143,8 +147,9 @@ public class ShipControlPanelViewController implements Initializable {
                 .customTickLabelsEnabled(true)
                 .customTickLabels("E", "", "", "", "", "1/2", "", "", "", "", "F")
                 .animated(true)
+                .value(0)
                 .build();
-        gaugeFuel.setValue(0.0);
+//        gaugeFuel.setValue(0.0);
         return gaugeFuel;
     }
 
@@ -175,7 +180,7 @@ public class ShipControlPanelViewController implements Initializable {
     }
 
     private Gauge initializeGaugeSpeed() {
-        Gauge gauge = GaugeBuilder.create()
+        return GaugeBuilder.create()
                 .skinType(Gauge.SkinType.MODERN)
                 .sections(new Section(85, 90, "", Color.rgb(204, 0, 0, 0.5)),
                         new Section(90, 95, "", Color.rgb(204, 0, 0, 0.75)),
@@ -188,7 +193,6 @@ public class ShipControlPanelViewController implements Initializable {
                 .thresholdVisible(true)
                 .animated(true)
                 .build();
-        return gauge;
     }
 
     private Gauge initializeRPM() {
