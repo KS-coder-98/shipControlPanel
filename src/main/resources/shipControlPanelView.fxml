@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="818.0" prefWidth="1000.0" style="-fx-background-color: #222930;" stylesheets="@mainPane.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ship.control.panel.controller.ShipControlPanelViewController">
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="818.0" prefWidth="1000.0" style="-fx-background-color: #222930;" stylesheets="@mainPane.css, @skinButtons.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ship.control.panel.controller.ShipControlPanelViewController">
    <children>
       <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="83.0" prefWidth="1000.0" text="Nazwa statku czy cos" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="735.0">
          <font>

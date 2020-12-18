@@ -1,3 +1,12 @@
 .bgSets {
     -fx-background-image: url("dark-honeycomb.png");
 }
+/*.box .thumb {*/
+/*    -fx-border-color: blue;*/
+/*    -fx-border-width: 4;*/
+/*    -fx-pref-width: 160.5;*/
+/*    -fx-background-radius: 0;*/
+/*    -fx-background-color: -bleu;*/
+/*    -fx-background-insets: 0 0 0 0, 0, 1, 2;*/
+/*    -fx-shape: "M 228 114 A 1 1 0 0 0 1226 357 L 238 -23";*/
+/*}*/

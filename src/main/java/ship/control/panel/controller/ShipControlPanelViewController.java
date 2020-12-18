@@ -4,6 +4,8 @@ import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
 import eu.hansolo.medusa.Section;
 import eu.hansolo.medusa.TickMarkType;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,20 +29,20 @@ public class ShipControlPanelViewController implements Initializable {
     @FXML
     private Pane speedValueGaugePane;
 
-    @FXML
-    private Slider leftGas;
-
-    @FXML
-    private Slider rightGas;
+//    @FXML
+//    private Slider leftGas;
+//
+//    @FXML
+//    private Slider rightGas;
 
     @FXML
     private Pane weatherDisplayPane;
 
     @FXML
     private Pane fuelGaugePane;
-
-    @FXML
-    private Pane gasPane;
+//
+//    @FXML
+//    private Pane gasPane;
 
     @FXML
     private Button buttonStartStop;
@@ -83,7 +85,7 @@ public class ShipControlPanelViewController implements Initializable {
                 gaugeFuel.setValue(gaugeFuel.getValue() - rpm.getValue() / 1000000);
             } else {
                 System.out.println("fuel off");
-                gaugeFuel.setValue(0);
+//                gaugeFuel.setValue(0);
             }
             try {
                 Thread.sleep(1000);
@@ -93,13 +95,22 @@ public class ShipControlPanelViewController implements Initializable {
         }
     }
 
+//    private synchronized void simulateSpeed() {
+//        double speed = leftGas.getValue() + rightGas.getValue();
+//        gaugeSpeed.setValue(speed);
+//    }
+
+    ;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         Ship.setOn(false);
 
-        gasPane.getStyleClass().add("gradientGas");
+//        gasPane.getStyleClass().add("gradientGas");
         mainPane.getStyleClass().add("bgSets");
+        buttonStartStop.getStyleClass().add("sale");
+//        leftGas.getStyleClass().add("box");
 
         fuelGaugePane.getChildren().add(gaugeFuel);
         weatherDisplayPane.getChildren().add(lcdScreen);
@@ -122,6 +133,22 @@ public class ShipControlPanelViewController implements Initializable {
                 rpm.setValue(1000);
             }
         });
+
+//        leftGas.valueProperty().addListener(new ChangeListener<Number>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
+//                System.out.println(newValue);
+//                simulateSpeed();
+//            }
+//        });
+//
+//        rightGas.valueProperty().addListener(new ChangeListener<Number>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
+//                System.out.println(newValue);
+//                simulateSpeed();
+//            }
+//        });
 
 
     }
@@ -186,12 +213,14 @@ public class ShipControlPanelViewController implements Initializable {
                         new Section(90, 95, "", Color.rgb(204, 0, 0, 0.75)),
                         new Section(95, 100, "", Color.rgb(204, 0, 0)))
                 .title("KNOT SPEED")
-                .value(14)
+                .maxValue(100)
+                .minValue(-100)
                 .prefSize(200, 225)
                 .unit("UNIT")
                 .threshold(85)
                 .thresholdVisible(true)
                 .animated(true)
+                .value(0)
                 .build();
     }
 
