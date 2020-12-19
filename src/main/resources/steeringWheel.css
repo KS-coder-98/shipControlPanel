@@ -27,3 +27,7 @@
 .indicator_7 {
     -fx-background-image: url("7_poz.PNG");
 }
+
+.lcd {
+    -fx-background-color: red;
+}

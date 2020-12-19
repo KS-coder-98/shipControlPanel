@@ -1,9 +1,6 @@
 package ship.control.panel.controller;
 
-import eu.hansolo.medusa.Gauge;
-import eu.hansolo.medusa.GaugeBuilder;
-import eu.hansolo.medusa.Section;
-import eu.hansolo.medusa.TickMarkType;
+import eu.hansolo.medusa.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -12,9 +9,14 @@ import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
+
 import ship.control.panel.model.Ship;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -52,6 +54,21 @@ public class ShipControlPanelViewController implements Initializable {
     @FXML
     private Button buttonStartStop;
 
+    @FXML
+    private Button buttonAnchorUp;
+
+    @FXML
+    private Button buttonLights;
+
+    @FXML
+    private Button buttonAnchorDown;
+
+    @FXML
+    private Button buttonHorn;
+
+    @FXML
+    private Button buttonMode;
+
     Ship ship;
 
     Gauge gaugeFuel = initializeGaugeFuel();
@@ -74,10 +91,12 @@ public class ShipControlPanelViewController implements Initializable {
                     lcdScreen.setValue(26);
                     lcdScreen.setTitle("Weather");
                     lcdScreen.setUnit("C");
+                    lcdScreen.setLcdDesign(LcdDesign.LIGHTGREEN);
                 } else {
                     lcdScreen.setValue(0);
                     lcdScreen.setTitle("");
                     lcdScreen.setUnit("");
+                    lcdScreen.setLcdDesign(LcdDesign.BLACK);
                 }
                 if (Ship.isOn()) {
                     double tempRpmValue = rpm.getValue();
@@ -138,6 +157,13 @@ public class ShipControlPanelViewController implements Initializable {
         }
     }
 
+    String pathHorn = "src/main/resources/horn.mp3";
+    String pathChain = "src/main/resources/chain.mp3";
+    Media mediaHorn = new Media(new File(pathHorn).toURI().toString());
+    Media mediaChain = new Media(new File(pathChain).toURI().toString());
+    MediaPlayer horn = new MediaPlayer(mediaHorn);
+    MediaPlayer chain = new MediaPlayer(mediaChain);
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -154,7 +180,7 @@ public class ShipControlPanelViewController implements Initializable {
             @Override
             public void handle(MouseEvent event) {
                 double position = event.getX();
-
+                System.out.println(event.getX());
                 if (position > 145 && position < 245) {
                     indicatorPosition = indicatorPosition.change(0);
 
@@ -213,6 +239,11 @@ public class ShipControlPanelViewController implements Initializable {
 //        gasPane.getStyleClass().add("gradientGas");
         mainPane.getStyleClass().add("bgSets");
         buttonStartStop.getStyleClass().add("sale");
+        buttonLights.getStyleClass().add("sale");
+        buttonMode.getStyleClass().add("sale");
+        buttonAnchorDown.getStyleClass().add("sale");
+        buttonAnchorUp.getStyleClass().add("sale");
+        buttonHorn.getStyleClass().add("sale");
 //        leftGas.getStyleClass().add("box");
 
         fuelGaugePane.getChildren().add(gaugeFuel);
@@ -236,6 +267,43 @@ public class ShipControlPanelViewController implements Initializable {
             }
             Ship.setOn(!Ship.isOn());
         });
+
+
+        buttonLights.addEventFilter(ActionEvent.ACTION, actionEvent -> {
+        });
+
+        buttonHorn.addEventFilter(ActionEvent.ACTION, actionEvent -> {
+            if (Ship.isOn()) {
+                horn.play();
+            }
+        });
+
+        buttonAnchorUp.addEventFilter(ActionEvent.ACTION, actionEvent -> {
+            if (Ship.isOn()) {
+                chain.play();
+            }
+        });
+
+        buttonAnchorDown.addEventFilter(ActionEvent.ACTION, actionEvent -> {
+            if (Ship.isOn()) {
+                chain.play();
+            }
+        });
+
+        buttonMode.addEventFilter(ActionEvent.ACTION, actionEvent -> {
+            if (Ship.isOn()) {
+                if(lcdScreen.getLcdDesign() == LcdDesign.LIGHTGREEN)
+                {
+                    lcdScreen.setLcdDesign(LcdDesign.DARKGREEN);
+                }
+                else if(lcdScreen.getLcdDesign() == LcdDesign.DARKGREEN){
+                    lcdScreen.setLcdDesign(LcdDesign.LIGHTGREEN);
+                }
+
+            }
+        });
+
+
     }
 
     private Gauge initializeGaugeFuel() {
@@ -268,19 +336,8 @@ public class ShipControlPanelViewController implements Initializable {
     private Gauge initializeLcdScreen() {
         var gaugeLcdScreen = GaugeBuilder.create()
                 .skinType(Gauge.SkinType.LCD)
-//                .ledColor(Color.PURPLE)
-//                .foregroundBaseColor(Color.BLACK)
-//                .barColor(Color.BLACK)
-//                .averageColor(Color.BLACK)
-//                .barBackgroundColor(Color.BLACK)
-//                .ledOn(true)
-//                .
-//                .title("TEMPERATURE")
+                .lcdDesign(LcdDesign.BLACK)
                 .prefSize(480, 201)
-//                .subTitle("subtitle")
-//                .value(26)
-//                .unit("C")
-//                .averageVisible(true)
                 .build();
         gaugeLcdScreen.setBarBackgroundColor(Color.BLACK);
         gaugeLcdScreen.setForegroundBaseColor(Color.WHITE);
@@ -293,14 +350,16 @@ public class ShipControlPanelViewController implements Initializable {
 
     private Gauge initializeGaugeSpeed() {
         return GaugeBuilder.create()
-                .skinType(Gauge.SkinType.MODERN)
+                .skinType(Gauge.SkinType.HORIZONTAL)
                 .sections(new Section(85, 90, "", Color.rgb(204, 0, 0, 0.5)),
                         new Section(90, 95, "", Color.rgb(204, 0, 0, 0.75)),
                         new Section(95, 100, "", Color.rgb(204, 0, 0)))
                 .title("KNOT SPEED")
                 .maxValue(50)
                 .minValue(-50)
-                .prefSize(200, 225)
+                .prefSize(350, 350)
+                //.borderPaint(Color.WHITE)
+                .foregroundBaseColor(Color.WHITE)
                 .unit("UNIT")
                 .threshold(85)
                 .thresholdVisible(true)
@@ -334,6 +393,5 @@ public class ShipControlPanelViewController implements Initializable {
                 .animated(true)
                 .build();
     }
-
 
 }
