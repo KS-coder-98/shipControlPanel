@@ -92,6 +92,15 @@ public class ShipControlPanelViewController implements Initializable {
                     rpm.setValue(0);
                 }
                 if (Ship.isOn()) {
+                    if ( indicatorPosition == Position.STOP ){
+                        rpm.setValue(1000);
+                    }else if ( indicatorPosition == Position.LEFTSLOW || indicatorPosition == Position.RIGHTSLOW ){
+                        rpm.setValue(2000);
+                    }else if ( indicatorPosition == Position.LEFTHALF || indicatorPosition == Position.RIGHTHALF ){
+                        rpm.setValue(2800);
+                    }else if ( indicatorPosition == Position.LEFTFULL || indicatorPosition == Position.RIGHTFULL ){
+                        rpm.setValue(3500);
+                    }
                     var oldValue = stateFuel - rpm.getValue() / 1000000;
                     stateFuel = oldValue;
                     System.out.println("fuel on "+ oldValue);
@@ -131,7 +140,7 @@ public class ShipControlPanelViewController implements Initializable {
                 if(position>145 && position<245){
                     indicatorPosition = indicatorPosition.change(0);
 
-                    if(indicatorPosition == Position.LEFTFULL && wasFull == false){
+                    if(indicatorPosition == Position.LEFTFULL && !wasFull){
                         indicator.getStyleClass().removeAll("indicator_2");
                         indicator.getStyleClass().add("indicator_1");
                         wasFull = true;
@@ -182,14 +191,14 @@ public class ShipControlPanelViewController implements Initializable {
                         indicator.getStyleClass().removeAll("indicator_5");
                         indicator.getStyleClass().add("indicator_6");
                     }
-                    else if(indicatorPosition == Position.RIGHTFULL && wasFull == false){
+                    else if(indicatorPosition == Position.RIGHTFULL && !wasFull){
                         indicator.getStyleClass().removeAll("indicator_6");
                         indicator.getStyleClass().add("indicator_7");
                         wasFull = true;
                     }
 
                 }
-
+                System.out.println(indicatorPosition);
             }
         });
 
