@@ -92,22 +92,41 @@ public class ShipControlPanelViewController implements Initializable {
                     rpm.setValue(0);
                 }
                 if (Ship.isOn()) {
-                    if ( indicatorPosition == Position.STOP ){
+                    if (indicatorPosition == Position.STOP) {
                         rpm.setValue(1000);
-                    }else if ( indicatorPosition == Position.LEFTSLOW || indicatorPosition == Position.RIGHTSLOW ){
+                    } else if (indicatorPosition == Position.LEFTSLOW || indicatorPosition == Position.RIGHTSLOW) {
                         rpm.setValue(2000);
-                    }else if ( indicatorPosition == Position.LEFTHALF || indicatorPosition == Position.RIGHTHALF ){
+                    } else if (indicatorPosition == Position.LEFTHALF || indicatorPosition == Position.RIGHTHALF) {
                         rpm.setValue(2800);
-                    }else if ( indicatorPosition == Position.LEFTFULL || indicatorPosition == Position.RIGHTFULL ){
+                    } else if (indicatorPosition == Position.LEFTFULL || indicatorPosition == Position.RIGHTFULL) {
                         rpm.setValue(3500);
                     }
                     var oldValue = stateFuel - rpm.getValue() / 1000000;
                     stateFuel = oldValue;
-                    System.out.println("fuel on "+ oldValue);
+                    System.out.println("fuel on " + oldValue);
                     gaugeFuel.setValue(oldValue);
                 } else {
                     System.out.println("fuel off");
                     gaugeFuel.setValue(0);
+                }
+                if (Ship.isOn()) {
+                    if (indicatorPosition == Position.STOP) {
+                        gaugeSpeed.setValue(0);
+                    } else if (indicatorPosition == Position.LEFTSLOW) {
+                        gaugeSpeed.setValue(-10);
+                    } else if (indicatorPosition == Position.LEFTHALF) {
+                        gaugeSpeed.setValue(-20);
+                    } else if (indicatorPosition == Position.LEFTFULL) {
+                        gaugeSpeed.setValue(-30);
+                    } else if (indicatorPosition == Position.RIGHTSLOW) {
+                        gaugeSpeed.setValue(10);
+                    } else if (indicatorPosition == Position.RIGHTHALF) {
+                        gaugeSpeed.setValue(20);
+                    } else if (indicatorPosition == Position.RIGHTFULL) {
+                        gaugeSpeed.setValue(30);
+                    }
+                }else{
+                    gaugeSpeed.setValue(0);
                 }
 
             }
@@ -120,14 +139,13 @@ public class ShipControlPanelViewController implements Initializable {
     }
 
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         inner.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                String str = "-fx-rotate: " +event.getSceneX()%360 + ";";
+                String str = "-fx-rotate: " + event.getSceneX() % 360 + ";";
                 inner.setStyle(str);
             }
         });
@@ -137,61 +155,50 @@ public class ShipControlPanelViewController implements Initializable {
             public void handle(MouseEvent event) {
                 double position = event.getX();
 
-                if(position>145 && position<245){
+                if (position > 145 && position < 245) {
                     indicatorPosition = indicatorPosition.change(0);
 
-                    if(indicatorPosition == Position.LEFTFULL && !wasFull){
+                    if (indicatorPosition == Position.LEFTFULL && !wasFull) {
                         indicator.getStyleClass().removeAll("indicator_2");
                         indicator.getStyleClass().add("indicator_1");
                         wasFull = true;
-                    }
-                    else if(indicatorPosition == Position.LEFTHALF){
+                    } else if (indicatorPosition == Position.LEFTHALF) {
                         indicator.getStyleClass().removeAll("indicator_3");
                         indicator.getStyleClass().add("indicator_2");
-                    }
-                    else if(indicatorPosition == Position.LEFTSLOW){
+                    } else if (indicatorPosition == Position.LEFTSLOW) {
                         indicator.getStyleClass().removeAll("indicator_4");
                         indicator.getStyleClass().add("indicator_3");
-                    }
-                    else if(indicatorPosition == Position.STOP){
+                    } else if (indicatorPosition == Position.STOP) {
                         indicator.getStyleClass().removeAll("indicator_5");
                         indicator.getStyleClass().add("indicator_4");
-                    }
-                    else if(indicatorPosition == Position.RIGHTSLOW){
+                    } else if (indicatorPosition == Position.RIGHTSLOW) {
                         indicator.getStyleClass().removeAll("indicator_6");
                         indicator.getStyleClass().add("indicator_5");
-                    }
-                    else if(indicatorPosition == Position.RIGHTHALF){
+                    } else if (indicatorPosition == Position.RIGHTHALF) {
                         indicator.getStyleClass().removeAll("indicator_7");
                         indicator.getStyleClass().add("indicator_6");
                         wasFull = false;
                     }
-                }
-                else if(position<343){
+                } else if (position < 343) {
                     indicatorPosition = indicatorPosition.change(1);
 
-                    if(indicatorPosition == Position.LEFTHALF){
+                    if (indicatorPosition == Position.LEFTHALF) {
                         indicator.getStyleClass().removeAll("indicator_1");
                         indicator.getStyleClass().add("indicator_2");
                         wasFull = false;
-                    }
-                    else if(indicatorPosition == Position.LEFTSLOW){
+                    } else if (indicatorPosition == Position.LEFTSLOW) {
                         indicator.getStyleClass().removeAll("indicator_2");
                         indicator.getStyleClass().add("indicator_3");
-                    }
-                    else if(indicatorPosition == Position.STOP){
+                    } else if (indicatorPosition == Position.STOP) {
                         indicator.getStyleClass().removeAll("indicator_3");
                         indicator.getStyleClass().add("indicator_4");
-                    }
-                    else if(indicatorPosition == Position.RIGHTSLOW){
+                    } else if (indicatorPosition == Position.RIGHTSLOW) {
                         indicator.getStyleClass().removeAll("indicator_4");
                         indicator.getStyleClass().add("indicator_5");
-                    }
-                    else if(indicatorPosition == Position.RIGHTHALF){
+                    } else if (indicatorPosition == Position.RIGHTHALF) {
                         indicator.getStyleClass().removeAll("indicator_5");
                         indicator.getStyleClass().add("indicator_6");
-                    }
-                    else if(indicatorPosition == Position.RIGHTFULL && !wasFull){
+                    } else if (indicatorPosition == Position.RIGHTFULL && !wasFull) {
                         indicator.getStyleClass().removeAll("indicator_6");
                         indicator.getStyleClass().add("indicator_7");
                         wasFull = true;
@@ -223,7 +230,7 @@ public class ShipControlPanelViewController implements Initializable {
                 firstRun = true;
                 System.out.println("wystartowal");
             }
-            if ( !Ship.isOn() ){
+            if (!Ship.isOn()) {
                 rpm.setValue(1000);
                 gaugeFuel.setValue(stateFuel);
             }
@@ -291,8 +298,8 @@ public class ShipControlPanelViewController implements Initializable {
                         new Section(90, 95, "", Color.rgb(204, 0, 0, 0.75)),
                         new Section(95, 100, "", Color.rgb(204, 0, 0)))
                 .title("KNOT SPEED")
-                .maxValue(100)
-                .minValue(-100)
+                .maxValue(50)
+                .minValue(-50)
                 .prefSize(200, 225)
                 .unit("UNIT")
                 .threshold(85)
