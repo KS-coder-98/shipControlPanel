@@ -1,0 +1,29 @@
+.outer {
+    -fx-background-image: url("kolo_nale.PNG");
+}
+
+.inner {
+    -fx-background-image: url("kolo_duze.PNG");
+}
+
+.indicator_1 {
+    -fx-background-image: url("1_poz.PNG");
+}
+.indicator_2 {
+    -fx-background-image: url("2_poz.PNG");
+}
+.indicator_3 {
+    -fx-background-image: url("3_poz.PNG");
+}
+.indicator_4 {
+    -fx-background-image: url("4_poz.PNG");
+}
+.indicator_5 {
+    -fx-background-image: url("5_poz.PNG");
+}
+.indicator_6 {
+    -fx-background-image: url("6_poz.PNG");
+}
+.indicator_7 {
+    -fx-background-image: url("7_poz.PNG");
+}

@@ -5,9 +5,11 @@ import eu.hansolo.medusa.GaugeBuilder;
 import eu.hansolo.medusa.Section;
 import eu.hansolo.medusa.TickMarkType;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -34,6 +36,18 @@ public class ShipControlPanelViewController implements Initializable {
 
     @FXML
     private Pane gasPane;
+
+    @FXML
+    private Pane inner;
+
+    @FXML
+    private Pane outer;
+
+    @FXML
+    private Pane indicator;
+
+    private static Position indicatorPosition = Position.STOP;
+    private static boolean wasFull = false;
 
     @FXML
     private Button buttonStartStop;
@@ -100,6 +114,84 @@ public class ShipControlPanelViewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        inner.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                String str = "-fx-rotate: " +event.getSceneX()%360 + ";";
+                inner.setStyle(str);
+            }
+        });
+
+        indicator.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                double position = event.getX();
+
+                if(position>145 && position<245){
+                    indicatorPosition = indicatorPosition.change(0);
+
+                    if(indicatorPosition == Position.LEFTFULL && wasFull == false){
+                        indicator.getStyleClass().removeAll("indicator_2");
+                        indicator.getStyleClass().add("indicator_1");
+                        wasFull = true;
+                    }
+                    else if(indicatorPosition == Position.LEFTHALF){
+                        indicator.getStyleClass().removeAll("indicator_3");
+                        indicator.getStyleClass().add("indicator_2");
+                    }
+                    else if(indicatorPosition == Position.LEFTSLOW){
+                        indicator.getStyleClass().removeAll("indicator_4");
+                        indicator.getStyleClass().add("indicator_3");
+                    }
+                    else if(indicatorPosition == Position.STOP){
+                        indicator.getStyleClass().removeAll("indicator_5");
+                        indicator.getStyleClass().add("indicator_4");
+                    }
+                    else if(indicatorPosition == Position.RIGHTSLOW){
+                        indicator.getStyleClass().removeAll("indicator_6");
+                        indicator.getStyleClass().add("indicator_5");
+                    }
+                    else if(indicatorPosition == Position.RIGHTHALF){
+                        indicator.getStyleClass().removeAll("indicator_7");
+                        indicator.getStyleClass().add("indicator_6");
+                        wasFull = false;
+                    }
+                }
+                else if(position<343){
+                    indicatorPosition = indicatorPosition.change(1);
+
+                    if(indicatorPosition == Position.LEFTHALF){
+                        indicator.getStyleClass().removeAll("indicator_1");
+                        indicator.getStyleClass().add("indicator_2");
+                        wasFull = false;
+                    }
+                    else if(indicatorPosition == Position.LEFTSLOW){
+                        indicator.getStyleClass().removeAll("indicator_2");
+                        indicator.getStyleClass().add("indicator_3");
+                    }
+                    else if(indicatorPosition == Position.STOP){
+                        indicator.getStyleClass().removeAll("indicator_3");
+                        indicator.getStyleClass().add("indicator_4");
+                    }
+                    else if(indicatorPosition == Position.RIGHTSLOW){
+                        indicator.getStyleClass().removeAll("indicator_4");
+                        indicator.getStyleClass().add("indicator_5");
+                    }
+                    else if(indicatorPosition == Position.RIGHTHALF){
+                        indicator.getStyleClass().removeAll("indicator_5");
+                        indicator.getStyleClass().add("indicator_6");
+                    }
+                    else if(indicatorPosition == Position.RIGHTFULL && wasFull == false){
+                        indicator.getStyleClass().removeAll("indicator_6");
+                        indicator.getStyleClass().add("indicator_7");
+                        wasFull = true;
+                    }
+
+                }
+
+            }
+        });
 
         Ship.setOn(false);
 //        gasPane.getStyleClass().add("gradientGas");
