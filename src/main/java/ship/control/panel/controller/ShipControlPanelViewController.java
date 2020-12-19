@@ -4,13 +4,10 @@ import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
 import eu.hansolo.medusa.Section;
 import eu.hansolo.medusa.TickMarkType;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -29,20 +26,14 @@ public class ShipControlPanelViewController implements Initializable {
     @FXML
     private Pane speedValueGaugePane;
 
-//    @FXML
-//    private Slider leftGas;
-//
-//    @FXML
-//    private Slider rightGas;
-
     @FXML
     private Pane weatherDisplayPane;
 
     @FXML
     private Pane fuelGaugePane;
-//
-//    @FXML
-//    private Pane gasPane;
+
+    @FXML
+    private Pane gasPane;
 
     @FXML
     private Button buttonStartStop;
@@ -57,19 +48,45 @@ public class ShipControlPanelViewController implements Initializable {
 
     Gauge rpm = initializeRPM();
 
-    private void simulateRPM() {
+    double stateFuel = 0.95;
+
+    private static boolean firstRun = false;
+
+    private void simulateEngineBehaviour() {
         boolean temp = true;
         while (true) {
-            if (Ship.isOn()) {
-                if (temp) {
-                    rpm.setValue(rpm.getValue() + 25);
+            if (firstRun) {
+                if (Ship.isOn()) {
+                    lcdScreen.setValue(26);
+                    lcdScreen.setTitle("Weather");
+                    lcdScreen.setUnit("C");
                 } else {
-                    rpm.setValue(rpm.getValue() - 25);
+                    lcdScreen.setValue(0);
+                    lcdScreen.setTitle("");
+                    lcdScreen.setUnit("");
                 }
-                temp = !temp;
-            } else {
-                System.out.println("rpm off");
-                rpm.setValue(0);
+                if (Ship.isOn()) {
+                    double tempRpmValue = rpm.getValue();
+                    if (temp) {
+                        rpm.setValue(tempRpmValue + 25);
+                    } else {
+                        rpm.setValue(tempRpmValue - 25);
+                    }
+                    temp = !temp;
+                } else {
+                    System.out.println("rpm off");
+                    rpm.setValue(0);
+                }
+                if (Ship.isOn()) {
+                    var oldValue = stateFuel - rpm.getValue() / 1000000;
+                    stateFuel = oldValue;
+                    System.out.println("fuel on "+ oldValue);
+                    gaugeFuel.setValue(oldValue);
+                } else {
+                    System.out.println("fuel off");
+                    gaugeFuel.setValue(0);
+                }
+
             }
             try {
                 Thread.sleep(1000);
@@ -79,34 +96,12 @@ public class ShipControlPanelViewController implements Initializable {
         }
     }
 
-    private void simulateFuel() {
-        while (true) {
-            if (Ship.isOn()) {
-                gaugeFuel.setValue(gaugeFuel.getValue() - rpm.getValue() / 1000000);
-            } else {
-                System.out.println("fuel off");
-//                gaugeFuel.setValue(0);
-            }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
-//    private synchronized void simulateSpeed() {
-//        double speed = leftGas.getValue() + rightGas.getValue();
-//        gaugeSpeed.setValue(speed);
-//    }
-
-    ;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         Ship.setOn(false);
-
 //        gasPane.getStyleClass().add("gradientGas");
         mainPane.getStyleClass().add("bgSets");
         buttonStartStop.getStyleClass().add("sale");
@@ -117,40 +112,22 @@ public class ShipControlPanelViewController implements Initializable {
         speedValueGaugePane.getChildren().add(gaugeSpeed);
         engineSpeedGaugePane.getChildren().add(rpm);
 
+        Thread threadSimulateEngine = new Thread(this::simulateEngineBehaviour);
+        threadSimulateEngine.setDaemon(true);
+        threadSimulateEngine.start();
 
-        Thread threadSimulatedRPM = new Thread(this::simulateRPM);
-        threadSimulatedRPM.setDaemon(true);
-        threadSimulatedRPM.start();
-
-        Thread threadSimulatedFuel = new Thread(this::simulateFuel);
-        threadSimulatedFuel.setDaemon(true);
-        threadSimulatedFuel.start();
 
         buttonStartStop.addEventFilter(ActionEvent.ACTION, actionEvent -> {
-            Ship.setOn(!Ship.isOn());
-            if (Ship.isOn()) {
-                gaugeFuel.setValue(0.95);
-                rpm.setValue(1000);
+            if (!firstRun) {
+                firstRun = true;
+                System.out.println("wystartowal");
             }
+            if ( !Ship.isOn() ){
+                rpm.setValue(1000);
+                gaugeFuel.setValue(stateFuel);
+            }
+            Ship.setOn(!Ship.isOn());
         });
-
-//        leftGas.valueProperty().addListener(new ChangeListener<Number>() {
-//            @Override
-//            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-//                System.out.println(newValue);
-//                simulateSpeed();
-//            }
-//        });
-//
-//        rightGas.valueProperty().addListener(new ChangeListener<Number>() {
-//            @Override
-//            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-//                System.out.println(newValue);
-//                simulateSpeed();
-//            }
-//        });
-
-
     }
 
     private Gauge initializeGaugeFuel() {
@@ -176,7 +153,7 @@ public class ShipControlPanelViewController implements Initializable {
                 .animated(true)
                 .value(0)
                 .build();
-//        gaugeFuel.setValue(0.0);
+        gaugeFuel.setValue(0.0);
         return gaugeFuel;
     }
 
