@@ -69,6 +69,8 @@ public class ShipControlPanelViewController implements Initializable {
     @FXML
     private Button buttonMode;
 
+    int typeLCD = 1; //1 normal, 2 mode
+
     Ship ship;
 
     Gauge gaugeFuel = initializeGaugeFuel();
@@ -87,11 +89,18 @@ public class ShipControlPanelViewController implements Initializable {
         boolean temp = true;
         while (true) {
             if (firstRun) {
+                if ( Ship.isOn() ){
+                    if ( stateFuel<=0 )
+                        Ship.setOn(false);
+                }
                 if (Ship.isOn()) {
                     lcdScreen.setValue(26);
                     lcdScreen.setTitle("Weather");
                     lcdScreen.setUnit("C");
-                    lcdScreen.setLcdDesign(LcdDesign.LIGHTGREEN);
+                    if ( typeLCD == 1 )
+                        lcdScreen.setLcdDesign(LcdDesign.LIGHTGREEN);
+                    else if ( typeLCD == 2 )
+                        lcdScreen.setLcdDesign(LcdDesign.DARKGREEN);
                 } else {
                     lcdScreen.setValue(0);
                     lcdScreen.setTitle("");
@@ -157,8 +166,8 @@ public class ShipControlPanelViewController implements Initializable {
         }
     }
 
-    String pathHorn = "src/main/resources/horn.mp3";
-    String pathChain = "src/main/resources/chain.mp3";
+    String pathHorn = "/home/krzysiek/polibuda/kck/ship/shipControlPanel/src/main/java/ship/control/panel/controller/horn.mp3";
+    String pathChain = "/home/krzysiek/polibuda/kck/ship/shipControlPanel/src/main/java/ship/control/panel/controller/chain.mp3";
     Media mediaHorn = new Media(new File(pathHorn).toURI().toString());
     Media mediaChain = new Media(new File(pathChain).toURI().toString());
     MediaPlayer horn = new MediaPlayer(mediaHorn);
@@ -286,7 +295,7 @@ public class ShipControlPanelViewController implements Initializable {
 
         buttonAnchorDown.addEventFilter(ActionEvent.ACTION, actionEvent -> {
             if (Ship.isOn()) {
-                chain.play();
+//                chain.play();
             }
         });
 
@@ -295,9 +304,11 @@ public class ShipControlPanelViewController implements Initializable {
                 if(lcdScreen.getLcdDesign() == LcdDesign.LIGHTGREEN)
                 {
                     lcdScreen.setLcdDesign(LcdDesign.DARKGREEN);
+                    typeLCD = 2;
                 }
                 else if(lcdScreen.getLcdDesign() == LcdDesign.DARKGREEN){
                     lcdScreen.setLcdDesign(LcdDesign.LIGHTGREEN);
+                    typeLCD = 1;
                 }
 
             }
